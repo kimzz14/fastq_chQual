@@ -1,4 +1,17 @@
+from optparse import OptionParser
+import subprocess, sys, smtplib, time
 import gzip, random
+
+#option parser
+parser = OptionParser(usage="""Run annotation.py \n Usage: %prog [options]""")
+parser.add_option("-i","--input",action = 'store',type = 'string',dest = 'INPUT',help = "")
+parser.add_option("-o","--output",action = 'store',type = 'string',dest = 'OUTPUT',help = "")
+(opt, args) = parser.parse_args()
+if opt.INPUT == None or opt.OUTPUT == None:
+    print("Error! usage: fastq_chQual.py -i SRR10121034_subreads.fastq.gz -o SRR10121034_subreads.chQual.fastq.gz")
+    sys.exit()
+
+
 def get_randomQual(minQual, maxQual, length):
     result = []
     for idx in range(length):
@@ -7,15 +20,11 @@ def get_randomQual(minQual, maxQual, length):
     return ''.join(result)
 
 
-    
+infile = opt.INPUT
+outfile = opt.OUTPUT
 
-
-
-
-prefix = 'SRR10121034_subreads.chQual'
-
-fin  = gzip.open(prefix + '.fastq.gz', 'rt')
-fout = gzip.open(prefix + '.chQual.fastq.gz', 'wt')
+fin  = gzip.open(infile, 'rt')
+fout = gzip.open(outfile, 'wt')
 
 for lineIDX, line in enumerate(fin):
     if lineIDX%4 == 0:
